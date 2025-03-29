@@ -1,3 +1,9 @@
 {
-  "name": "hardhat-project"
+  "name": "hardhat-project",
+  "devDependencies": {
+    "hardhat": "^2.22.19"
+  },
+  "dependencies": {
+    "viem": "^2.24.2"
+  }
 }
