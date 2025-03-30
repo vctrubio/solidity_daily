@@ -19,7 +19,7 @@ contract EventToken {
         address[] attendees; // Array of attendees
     }
 
-    Event public eventDetails;
+    Event private eventDetails;
     address private owner;
     uint256 private tokenCounter;
 
@@ -28,11 +28,11 @@ contract EventToken {
     mapping(address => uint256) public invitedBy;
     mapping(address => uint256) public employeeRewardCount;
 
-    constructor(uint256 _startTime, uint256 _duration) {
+    constructor() {
         owner = msg.sender;
         tokenCounter = 1;
-        eventDetails.startTime = _startTime; // e.g., 1743379200 for May 29, 2025
-        eventDetails.duration = _duration; // e.g., 3600 for 1 hour
+        // eventDetails.startTime = _startTime; // e.g., 1743379200 for May 29, 2025
+        // eventDetails.duration = _duration; // e.g., 3600 for 1 hour
     }
 
     modifier onlyOwner() {
@@ -60,14 +60,14 @@ contract EventToken {
     // Attendence for the event
     function entryEvent() public {
         require(invitedBy[msg.sender] > 0, "Not invited to the event");
-        require(
-            block.timestamp >= eventDetails.startTime,
-            "Event hasnt started"
-        );
-        require(
-            block.timestamp <= eventDetails.startTime + eventDetails.duration,
-            "Event has ended"
-        );
+        // require(
+        //     block.timestamp >= eventDetails.startTime,
+        //     "Event hasnt started"
+        // );
+        // require(
+        //     block.timestamp <= eventDetails.startTime + eventDetails.duration,
+        //     "Event has ended"
+        // );
 
         eventDetails.attendees.push(msg.sender);
 
