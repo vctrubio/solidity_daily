@@ -2,95 +2,103 @@
 pragma solidity ^0.8.0;
 
 /*
-
 Problem:
-- i want to track a which employee gives out which ticket and then see who attends the event. reward should be given to the employee wallet
-- we have a contract for THE event 
-  - it has different tokens assigend to different employee. 
-  - One token = One employee
-- Employee trade/or mint token to users
-- Users, if attent event, employee is rewarded
-- event has time, duration, attendence array/or mapping
+- Track which employee gives out which ticket and see who attends the event. Reward given to employee wallet.
+- Contract for THE event with unique tokens assigned to each employee (one token = one employee).
+- Employee invites others to the event.
+- If invitees attend, employee is rewarded.
+- Event has time, duration, and attendance array.
 
 Date: 29.05.25
-
-*/
-
-/* quick thinking
-an employee with subcribe to the event
-an employee can share this event with others,
-if others show up, employeee is rewarded.
-event needs to be an event, with a dattetime, and duration, to see when attenance is taken
 */
 
 contract EventToken {
-    struct Eventi {
-        // uint256 date; // Timestamp of the event
-        // uint256 duration; // Duration in seconds (e.g., 3600 for 1 hour)
-        uint256[] tokenIds; // Array of token IDs associated with the event
+    struct Event {
+        uint256 startTime;
+        uint256 duration;
+        address[] attendees; // Array of attendees
     }
 
-    Eventi eventi;
-
+    Event public eventDetails;
     address private owner;
+    uint256 private tokenCounter;
 
     mapping(address => uint256) public employeeTokens;
+    mapping(uint256 => address) public tokenToEmployee;
+    mapping(address => uint256) public invitedBy;
+    mapping(address => uint256) public employeeRewardCount;
 
-    constructor() {
+    constructor(uint256 _startTime, uint256 _duration) {
         owner = msg.sender;
+        tokenCounter = 1;
+        eventDetails.startTime = _startTime; // e.g., 1743379200 for May 29, 2025
+        eventDetails.duration = _duration; // e.g., 3600 for 1 hour
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "mod: Only Authority");
+        require(msg.sender == owner, "Only owner allowed");
         _;
+    }
+
+    // Subscribe to the event
+    // get a token, invite others, and get rewards
+    function sub() public {
+        require(employeeTokens[msg.sender] == 0, "Already subscribed");
+        require(msg.sender != owner, "Owner cannot subscribe");
+        employeeTokens[msg.sender] = tokenCounter;
+        tokenToEmployee[tokenCounter] = msg.sender;
+        tokenCounter += 1;
+    }
+
+    function invite(address _invitee) public {
+        require(employeeTokens[msg.sender] > 0, "Must be subscribed to invite");
+        require(_invitee != msg.sender, "Cannot invite yourself");
+        require(invitedBy[_invitee] == 0, "Invitee already invited");
+        invitedBy[_invitee] = employeeTokens[msg.sender];
+    }
+
+    // Attendence for the event
+    function entryEvent() public {
+        require(invitedBy[msg.sender] > 0, "Not invited to the event");
+        require(
+            block.timestamp >= eventDetails.startTime,
+            "Event hasnt started"
+        );
+        require(
+            block.timestamp <= eventDetails.startTime + eventDetails.duration,
+            "Event has ended"
+        );
+
+        eventDetails.attendees.push(msg.sender);
+
+        // Credit the employee who invited this attendee
+        address employee = tokenToEmployee[invitedBy[msg.sender]];
+        employeeRewardCount[employee] += 1;
+    }
+
+    function payout() public onlyOwner {
+        // to implement payout logic
     }
 
     function getOwner() public view onlyOwner returns (address) {
         return owner;
     }
 
-    //giveTicket
-    function giveTicketToken(address _attendee) public {
-        require(employeeTokens[msg.sender] > 0, "require: You have not subscribed yet");
-        //i want the token in the user's wallet, so then we can use it when we check for teh event
-    }
-
-    function entryEvent() public{
-        //check to see if msg.owner has evenTicketToken, 
-        //if so, then add to the event
-
-    }
-
-    //subscribe, a user to have a token, to invite others to the event
-    function sub() public {
-        require(
-            employeeTokens[msg.sender] == 0,
-            "require: Only 1 wallet, 1 token"
-        );
-        require(msg.sender != owner, "require: Owner cannot subscribe");
-        employeeTokens[msg.sender] = 1;
-    }
-
-    //what is the right view if i want to call it ...
-    function subAdd(address _address) public onlyOwner {
-        require(
-            employeeTokens[_address] == 0,
-            "require: Only 1 wallet, 1 token"
-        );
-        require(_address != owner, "require: Owner cannot subscribe");
-        employeeTokens[_address] = 1;
-    }
-
     function getToken() external view returns (uint256) {
         return employeeTokens[msg.sender];
     }
+
     function getTokenOf(address _address) external view returns (uint256) {
         return employeeTokens[_address];
     }
 
-    function payout() public onlyOwner{
-        //function to loop through all events tokens,
-        //call reward const for each token that beliongs to the empolyeeToken
-        
+    function getInviteeEmployee(
+        address _invitee
+    ) external view returns (address) {
+        return tokenToEmployee[invitedBy[_invitee]];
+    }
+
+    function getAttendees() external view returns (address[] memory) {
+        return eventDetails.attendees;
     }
 }
