@@ -15,11 +15,17 @@ describe("Event Contract", function () {
         await eventContract.waitForDeployment();
     });
 
-    describe("Deployment", function () {
+    describe("Deployment within owner", function () {
         it("Should set the right owner", async function () {
-            // Use ethers to read thecontract
             const contractOwner = await eventContract.getOwner();
             expect(contractOwner).to.equal(await owner.getAddress());
+        });
+
+        it("Should reject non-owner from calling getOwner", async function () {
+            const eventContractAsAddr1 = eventContract.connect(addr1);
+
+            await expect(eventContractAsAddr1.getOwner())
+                .to.be.rejectedWith("mod: Only Authority");
         });
     });
 });

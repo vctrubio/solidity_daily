@@ -30,7 +30,12 @@ contract EventToken {
         owner = msg.sender;
     }
 
-    function getOwner() public view returns (address) {
+    modifier onlyOwner() {
+        require(msg.sender == owner, "mod: Only Authority");
+        _;
+    }
+
+    function getOwner() public view onlyOwner returns (address) {
         return owner;
     }
 }
