@@ -1,4 +1,4 @@
-.PHONY: compile test clean
+.PHONY: compile test clean deploy
 
 # Compile solidity contracts
 compile:
@@ -15,6 +15,14 @@ test-file:
 # Clean build artifacts
 clean:
 	rm -rf artifacts cache typechain typechain-types
+
+# Deploy script with NAME parameter
+deploy: compile
+	bun run hardhat run scripts/deploy-$(NAME).js
+
+# Deploy to a specific network
+deploy-network: compile
+	bun run hardhat run scripts/deploy-$(NAME).js
 
 # Default action
 all: compile test

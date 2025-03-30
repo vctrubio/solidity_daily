@@ -26,6 +26,8 @@ event needs to be an event, with a dattetime, and duration, to see when attenanc
 contract EventToken {
     address private owner;
 
+    mapping(address => uint256) public employeeTokens;
+
     constructor() {
         owner = msg.sender;
     }
@@ -38,4 +40,22 @@ contract EventToken {
     function getOwner() public view onlyOwner returns (address) {
         return owner;
     }
+
+    function subcribe() external {
+        require(employeeTokens[msg.sender] == 0, "require: Only 1 wallet, 1 token");
+        employeeTokens[msg.sender] = 1;
+    }
+
+    function subcribe(address _address) external onlyOwner {
+        require(employeeTokens[_address] == 0, "require: Only 1 wallet, 1 token");
+        employeeTokens[_address] = 1;
+    }
+    
+    function getToken() external view returns (uint256) {
+        return employeeTokens[msg.sender];
+    }
+    function getTokenOf(address _address) external view returns (uint256) {
+        return employeeTokens[_address];
+    }
+
 }
