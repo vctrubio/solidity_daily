@@ -41,21 +41,29 @@ contract EventToken {
         return owner;
     }
 
-    function subcribe() external {
-        require(employeeTokens[msg.sender] == 0, "require: Only 1 wallet, 1 token");
+    //subscribe, a user to have a token, to invite others to the event
+    function sub() public {
+        require(
+            employeeTokens[msg.sender] == 0,
+            "require: Only 1 wallet, 1 token"
+        );
+        require(msg.sender != owner, "require: Owner cannot subscribe");
         employeeTokens[msg.sender] = 1;
     }
 
-    function subcribe(address _address) external onlyOwner {
-        require(employeeTokens[_address] == 0, "require: Only 1 wallet, 1 token");
+    function subAdd(address _address) internal onlyOwner {
+        require(
+            employeeTokens[_address] == 0,
+            "require: Only 1 wallet, 1 token"
+        );
+        require(msg.sender != owner, "require: Owner cannot subscribe");
         employeeTokens[_address] = 1;
     }
-    
+
     function getToken() external view returns (uint256) {
         return employeeTokens[msg.sender];
     }
     function getTokenOf(address _address) external view returns (uint256) {
         return employeeTokens[_address];
     }
-
 }
