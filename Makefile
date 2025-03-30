@@ -16,13 +16,9 @@ test-file:
 clean:
 	rm -rf artifacts cache typechain typechain-types
 
-# Deploy script with NAME parameter
-deploy: compile
-	bun run hardhat run scripts/deploy-$(NAME).js
-
-# Deploy to a specific network
-deploy-network: compile
-	bun run hardhat run scripts/deploy-$(NAME).js
+# Deploy using bunx hardhat specific contract + network
+deploy-et: 
+	bunx hardhat run scripts/deploy-EventToken.js --network localhost
 
 # Default action
 all: compile test
