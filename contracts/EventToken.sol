@@ -15,3 +15,22 @@ Problem:
 Date: 29.05.25
 
 */
+
+/* quick thinking
+an employee with subcribe to the event
+an employee can share this event with others,
+if others show up, employeee is rewarded.
+event needs to be an event, with a dattetime, and duration, to see when attenance is taken
+*/
+
+contract EventToken {
+    address private owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function getOwner() public view returns (address) {
+        return owner;
+    }
+}
