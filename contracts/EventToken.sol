@@ -24,6 +24,14 @@ event needs to be an event, with a dattetime, and duration, to see when attenanc
 */
 
 contract EventToken {
+    struct Eventi {
+        // uint256 date; // Timestamp of the event
+        // uint256 duration; // Duration in seconds (e.g., 3600 for 1 hour)
+        uint256[] tokenIds; // Array of token IDs associated with the event
+    }
+
+    Eventi eventi;
+
     address private owner;
 
     mapping(address => uint256) public employeeTokens;
@@ -41,6 +49,18 @@ contract EventToken {
         return owner;
     }
 
+    //giveTicket
+    function giveTicketToken(address _attendee) public {
+        require(employeeTokens[msg.sender] > 0, "require: You have not subscribed yet");
+        //i want the token in the user's wallet, so then we can use it when we check for teh event
+    }
+
+    function entryEvent() public{
+        //check to see if msg.owner has evenTicketToken, 
+        //if so, then add to the event
+
+    }
+
     //subscribe, a user to have a token, to invite others to the event
     function sub() public {
         require(
@@ -51,12 +71,13 @@ contract EventToken {
         employeeTokens[msg.sender] = 1;
     }
 
-    function subAdd(address _address) internal onlyOwner {
+    //what is the right view if i want to call it ...
+    function subAdd(address _address) public onlyOwner {
         require(
             employeeTokens[_address] == 0,
             "require: Only 1 wallet, 1 token"
         );
-        require(msg.sender != owner, "require: Owner cannot subscribe");
+        require(_address != owner, "require: Owner cannot subscribe");
         employeeTokens[_address] = 1;
     }
 
@@ -65,5 +86,11 @@ contract EventToken {
     }
     function getTokenOf(address _address) external view returns (uint256) {
         return employeeTokens[_address];
+    }
+
+    function payout() public onlyOwner{
+        //function to loop through all events tokens,
+        //call reward const for each token that beliongs to the empolyeeToken
+        
     }
 }
