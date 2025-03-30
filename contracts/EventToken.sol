@@ -10,6 +10,13 @@ Problem:
 - Event has time, duration, and attendance array.
 
 Date: 29.05.25
+
+Runthrough:
+- mappings to keep track of 
+    - people who subscribe to the contract, to the invite other
+    - others who where invited by subscribers
+    - rewardCount to later implement a payout function
+- no erc tokens where used, maybe next time
 */
 
 contract EventToken {

@@ -1,4 +1,4 @@
-# The more, the better.
+# The more, the better
 
 I plan to write daily, roughly 1 hour sessions. From brainstorming to design, and testing. (test can be written after the 60 minutes)
 
@@ -12,5 +12,6 @@ I plan to write daily, roughly 1 hour sessions. From brainstorming to design, an
 
 - problem to solve
 - date
-- duration
+- duration (roughlt all will be 1 hour)
 - contract
+- runthrough (what i did)
